@@ -2,7 +2,7 @@
 	"id": "link-delete-plugin",
 	"name": "Link-Delete Plugin",
 	"version": "0.0.1",
-	"minAppVersion": "0.12.0",
+	"minAppVersion": "0.15.0",
 	"description": "",
 	"author": "Joshua Halbert",
 	"authorUrl": "https://joshuahalbert.com",
