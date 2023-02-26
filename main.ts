@@ -40,16 +40,31 @@ export default class LinkDeletePlugin extends Plugin {
         // Get the whole line that the cursor is on
         const currentLine = editor.getLine(currentCursor.line)
 
+        // Determine if the cursor is inside a link
+        let inLink = true
+
+        const lastOpenBrackets = currentLine.substring(0, currentCursor.ch + 1).lastIndexOf('[[')
+        if(lastOpenBrackets == -1) inLink = false
+
+        const nextClosedBrackets = currentLine.indexOf(']]', lastOpenBrackets)
+        if(nextClosedBrackets == -1) inLink = false
+        if(!(currentCursor.ch < nextClosedBrackets + 2)) inLink = false
+        
+        if(!inLink) {
+                console.log('cursor not in link')
+                return
+        }
+
         // Find the last instance of '[[' behind the cursor
         const from:obsidian.EditorPosition = {
             line: currentCursor.line,
-            ch: currentLine.substring(0, currentCursor.ch).lastIndexOf('[[')
+            ch: currentLine.substring(0, currentCursor.ch + 2).lastIndexOf('[[')
         }
         
-        // Find the first instance of ']]' after the the opening brackets
+        // Find the first instance of ']]' after the the cursor
         const to:obsidian.EditorPosition = {
             line: currentCursor.line,
-            ch: currentLine.indexOf(']]', from.ch) + 2
+            ch: currentLine.indexOf(']]', currentCursor.ch - 2) + 2
         }
 
         // Do nothing if a full link is not found
