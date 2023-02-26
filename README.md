@@ -1,0 +1,1 @@
+# Link-Delete Plugin for Obsidian
