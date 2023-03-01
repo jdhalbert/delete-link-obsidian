@@ -6,17 +6,15 @@ export default class LinkDeletePlugin extends Plugin {
     async onload() {
 		await this.load()
         console.log("Loading link-delete plugin")
+
+        // Must alias "this" for the editorCallback or it will raise "not a function" error
         const replaceLinkWithNoteFunc = this.replaceLinkWithNote
 
-        // This adds a settings tab so the user can configure various aspects of the plugin
-        //this.addSettingTab(new SampleSettingTab(this.app, this))
-
+        // Register the function as a command with a default hotkey
         this.addCommand({
             id: "delete-link",
-            name: "Delete link to block",
-            // change the callback here?
-            //callback: function (editor:Editor) { return this.replaceLinkWithNote(editor) }
-            editorCallback: function (editor: Editor, ctx) { return replaceLinkWithNoteFunc(editor) },
+            name: "Remove link and replace with note portion only",
+            editorCallback: function (editor: Editor) { return replaceLinkWithNoteFunc(editor) },
             hotkeys: [
                 {
                     modifiers: ["Mod"],
@@ -30,9 +28,8 @@ export default class LinkDeletePlugin extends Plugin {
         console.log("Unloading link-delete plugin")
 	}
 
-    replaceLinkWithNote(editor:Editor) {
-        //const editor = this.app.workspace.activeEditor.editor
-        console.log('Delete-link called')
+    replaceLinkWithNote(editor:Editor):void {
+        console.log('link-delete called')
 
         // Find the cursor
         const currentCursor:obsidian.EditorPosition = editor.getCursor()
@@ -51,8 +48,8 @@ export default class LinkDeletePlugin extends Plugin {
         if(!(currentCursor.ch < nextClosedBrackets + 2)) inLink = false
         
         if(!inLink) {
-                console.log('cursor not in link')
-                return
+            console.log('cursor not in link')
+            return
         }
 
         // Find the last instance of '[[' behind the cursor
